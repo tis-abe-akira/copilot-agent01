@@ -135,7 +135,10 @@ function App() {
       <Fab
         color="primary"
         sx={{ position: 'fixed', bottom: 16, right: 16 }}
-        onClick={() => setIsEditOpen(true)}
+        onClick={() => {
+          setEditingMember(undefined);
+          setIsEditOpen(true);
+        }}
       >
         <AddIcon />
       </Fab>

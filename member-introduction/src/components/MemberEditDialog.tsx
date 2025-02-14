@@ -1,4 +1,4 @@
-import { FC, useState, useRef } from 'react';
+import { FC, useState, useRef, useEffect } from 'react';
 import {
   Dialog,
   DialogTitle,
@@ -28,11 +28,21 @@ export const MemberEditDialog: FC<Props> = ({
   onClose,
   onSave
 }) => {
-  const [name, setName] = useState(member?.name ?? '');
-  const [introduction, setIntroduction] = useState(member?.introduction ?? '');
-  const [selectedTags, setSelectedTags] = useState<Tag[]>(member?.tags ?? []);
+  const [name, setName] = useState('');
+  const [introduction, setIntroduction] = useState('');
+  const [selectedTags, setSelectedTags] = useState<Tag[]>([]);
   const fileInputRef = useRef<HTMLInputElement>(null);
-  const [previewUrl, setPreviewUrl] = useState<string>(member?.iconUrl ?? '');
+  const [previewUrl, setPreviewUrl] = useState<string>('');
+
+  useEffect(() => {
+    // ダイアログが開かれたときに初期値をセット
+    if (open) {
+      setName(member?.name ?? '');
+      setIntroduction(member?.introduction ?? '');
+      setSelectedTags(member?.tags ?? []);
+      setPreviewUrl(member?.iconUrl ?? '');
+    }
+  }, [open, member]);
 
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
@@ -57,8 +67,20 @@ export const MemberEditDialog: FC<Props> = ({
     onClose();
   };
 
+  const handleClose = () => {
+    // フォームの状態をリセット
+    setName('');
+    setIntroduction('');
+    setSelectedTags([]);
+    setPreviewUrl('');
+    if (fileInputRef.current) {
+      fileInputRef.current.value = '';
+    }
+    onClose();
+  };
+
   return (
-    <Dialog open={open} onClose={onClose} maxWidth="sm" fullWidth>
+    <Dialog open={open} onClose={handleClose} maxWidth="sm" fullWidth>
       <DialogTitle>{member ? 'メンバー情報編集' : '新規メンバー登録'}</DialogTitle>
       <DialogContent>
         <Stack spacing={3} sx={{ mt: 1 }}>
@@ -127,7 +149,7 @@ export const MemberEditDialog: FC<Props> = ({
         </Stack>
       </DialogContent>
       <DialogActions>
-        <Button onClick={onClose}>キャンセル</Button>
+        <Button onClick={handleClose}>キャンセル</Button>
         <Button onClick={handleSave} variant="contained" disabled={!name || !introduction}>
           保存
         </Button>
