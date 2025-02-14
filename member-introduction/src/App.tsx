@@ -1,10 +1,11 @@
 import { useState } from 'react';
-import { Box, Fab, Container } from '@mui/material';
+import { Box, Fab, Container, Button } from '@mui/material';
 import AddIcon from '@mui/icons-material/Add';
 import { Member, Tag, CreateMemberInput, UpdateMemberInput } from './types/member';
 import { MemberList } from './components/MemberList';
 import { MemberDetailDialog } from './components/MemberDetailDialog';
 import { MemberEditDialog } from './components/MemberEditDialog';
+import { TagManageDialog } from './components/TagManageDialog';
 import { DropResult } from '@hello-pangea/dnd';
 
 // サンプルデータ
@@ -44,7 +45,9 @@ function App() {
   const [selectedMember, setSelectedMember] = useState<Member | null>(null);
   const [isDetailOpen, setIsDetailOpen] = useState(false);
   const [isEditOpen, setIsEditOpen] = useState(false);
+  const [isTagManageOpen, setIsTagManageOpen] = useState(false);
   const [editingMember, setEditingMember] = useState<Member | undefined>();
+  const [tags, setTags] = useState<Tag[]>(sampleTags);
 
   const handleDragEnd = (result: DropResult) => {
     if (!result.destination) return;
@@ -105,8 +108,29 @@ function App() {
     }
   };
 
+  const handleTagSave = (updatedTags: Tag[]) => {
+    setTags(updatedTags);
+    // メンバーのタグ情報も更新（削除されたタグを除去）
+    setMembers(members.map(member => ({
+      ...member,
+      tags: member.tags.filter(tag => 
+        updatedTags.some(updatedTag => updatedTag.id === tag.id)
+      )
+    })));
+  };
+
   return (
     <Container sx={{ py: 4 }}>
+      <Box sx={{ display: 'flex', justifyContent: 'flex-end', mb: 2 }}>
+        <Button
+          variant="outlined"
+          onClick={() => setIsTagManageOpen(true)}
+          sx={{ mr: 2 }}
+        >
+          タグを管理
+        </Button>
+      </Box>
+
       <MemberList
         members={members}
         onMemberClick={handleMemberClick}
@@ -124,12 +148,19 @@ function App() {
       <MemberEditDialog
         open={isEditOpen}
         member={editingMember}
-        tags={sampleTags}
+        tags={tags}
         onClose={() => {
           setIsEditOpen(false);
           setEditingMember(undefined);
         }}
         onSave={handleSave}
+      />
+
+      <TagManageDialog
+        open={isTagManageOpen}
+        tags={tags}
+        onClose={() => setIsTagManageOpen(false)}
+        onSave={handleTagSave}
       />
 
       <Fab
