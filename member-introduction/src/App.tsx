@@ -87,7 +87,7 @@ function App() {
               name: data.name ?? member.name,
               introduction: data.introduction ?? member.introduction,
               iconUrl: data.iconFile ? URL.createObjectURL(data.iconFile) : member.iconUrl,
-              tags: data.tags ? data.tags.map(tagId => sampleTags.find(t => t.id === tagId)!).filter(Boolean) : member.tags,
+              tags: data.tags ? data.tags.map(tagId => tags.find(t => t.id === tagId)!).filter(Boolean) : member.tags,
               updatedAt: new Date(),
             }
           : member
@@ -99,7 +99,7 @@ function App() {
         name: data.name,
         introduction: data.introduction,
         iconUrl: data.iconFile ? URL.createObjectURL(data.iconFile) : 'https://i.pravatar.cc/150',
-        tags: data.tags.map(tagId => sampleTags.find(t => t.id === tagId)!).filter(Boolean),
+        tags: data.tags.map(tagId => tags.find(t => t.id === tagId)!).filter(Boolean),
         isEditable: true,
         createdAt: new Date(),
         updatedAt: new Date(),
