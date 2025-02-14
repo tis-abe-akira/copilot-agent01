@@ -1,50 +1,78 @@
-# React + TypeScript + Vite
+# 🎉 Member Introduction App
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+めっちゃ使いやすい部員紹介アプリ！✨
 
-Currently, two official plugins are available:
+## 🌟 特徴
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+- 部員のプロフィールをカード形式で表示
+- ドラッグ＆ドロップで並び替えができる
+- かわいいタグ機能付き（職位とか趣味とかを色分けできる）
+- アイコン画像もドラッグ＆ドロップでアップロード可能
 
-## Expanding the ESLint configuration
+## 🛠️ 使用技術
 
-If you are developing a production application, we recommend updating the configuration to enable type aware lint rules:
+- React + TypeScript
+- Vite
+- Material-UI (MUI)
+- @hello-pangea/dnd (ドラッグ＆ドロップ機能)
+- mui-color-input (タグのカラーピッカー)
 
-- Configure the top-level `parserOptions` property like this:
+## ⚙️ セットアップ方法
 
-```js
-export default tseslint.config({
-  languageOptions: {
-    // other options...
-    parserOptions: {
-      project: ['./tsconfig.node.json', './tsconfig.app.json'],
-      tsconfigRootDir: import.meta.dirname,
-    },
-  },
-})
+```bash
+# パッケージのインストール
+npm install
+
+# 開発サーバーの起動
+npm run dev
 ```
 
-- Replace `tseslint.configs.recommended` to `tseslint.configs.recommendedTypeChecked` or `tseslint.configs.strictTypeChecked`
-- Optionally add `...tseslint.configs.stylisticTypeChecked`
-- Install [eslint-plugin-react](https://github.com/jsx-eslint/eslint-plugin-react) and update the config:
+## 💫 主な機能
 
-```js
-// eslint.config.js
-import react from 'eslint-plugin-react'
+### 部員情報の管理
+- 部員の追加・編集・削除
+- プロフィール画像のアップロード
+- 自己紹介文の管理
 
-export default tseslint.config({
-  // Set the react version
-  settings: { react: { version: '18.3' } },
-  plugins: {
-    // Add the react plugin
-    react,
-  },
-  rules: {
-    // other rules...
-    // Enable its recommended rules
-    ...react.configs.recommended.rules,
-    ...react.configs['jsx-runtime'].rules,
-  },
-})
-```
+### タグ機能
+- タグの追加・編集・削除
+- タグごとに色を設定可能
+- 部員にタグを複数設定可能
+
+### リスト表示
+- ドラッグ＆ドロップで並び替え
+- クリックで詳細表示
+- 長いテキストは自動で省略（詳細で全文表示）
+
+## 📝 使い方
+
+1. **メンバーの追加**
+   - 右下の「+」ボタンをクリック
+   - 必要な情報を入力
+   - アイコン画像をアップロード（任意）
+   - タグを選択（任意）
+
+2. **タグの管理**
+   - 「タグを管理」ボタンをクリック
+   - タグの追加・編集・削除が可能
+   - 色も自由に設定できる
+
+3. **メンバーの編集・削除**
+   - メンバーカードをクリックして詳細表示
+   - 編集ボタンで情報を更新
+   - 削除ボタンでメンバーを削除（確認ダイアログあり）
+
+4. **並び替え**
+   - メンバーカードをドラッグ＆ドロップで好きな位置に移動
+
+## 🎨 今後の展望
+
+- ユーザー認証機能の追加
+- データの永続化（バックエンド連携）
+- 検索・フィルター機能
+- レスポンシブデザインの強化
+
+## 📌 注意事項
+
+- 現時点ではデータは永続化されていません（ページをリロードすると初期状態に戻ります）
+- 画像のアップロードはブラウザのメモリ上で処理されます
