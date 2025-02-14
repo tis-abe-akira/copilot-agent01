@@ -1112,3 +1112,115 @@ Made changes.
 なにか気になることとか、追加してほしい情報とかある？特に開発者向けのセクション（コードの構造とか、プロジェクトの拡張方法とか）も追加できるし、スクリーンショットとかGIFとかがあるともっと分かりやすくなると思うんだけど、どう？👀✨
 
 あと、このプロジェクト全体を使ってて気になったところとかあったら教えてね！改善点とかあったら一緒に直していこ！💪
+
+tis-abe-akira: uiにダークモードを追加したいなぁ。
+
+GitHub Copilot: はーい！ダークモード追加しちゃうよ～！✨
+
+Material-UIのThemeProviderを使って実装していくね！まず、App.tsxを修正するよ！
+````
+import { useState } from 'react';
+import { Box, Fab, Container, Button, IconButton, CssBaseline, useTheme } from '@mui/material';
+import { ThemeProvider, createTheme } from '@mui/material/styles';
+import AddIcon from '@mui/icons-material/Add';
+import Brightness4Icon from '@mui/icons-material/Brightness4';  // ダークモードアイコン
+import Brightness7Icon from '@mui/icons-material/Brightness7';  // ライトモードアイコン
+// ...existing code...
+
+function App() {
+  // ...existing code...
+  const [darkMode, setDarkMode] = useState(false);
+
+  const theme = createTheme({
+    palette: {
+      mode: darkMode ? 'dark' : 'light',
+    },
+  });
+
+  const toggleDarkMode = () => {
+    setDarkMode(!darkMode);
+  };
+
+  return (
+    <ThemeProvider theme={theme}>
+      <CssBaseline />
+      <Container sx={{ py: 4 }}>
+        <Box sx={{ display: 'flex', justifyContent: 'flex-end', mb: 2, gap: 2 }}>
+          <IconButton onClick={toggleDarkMode} color="inherit">
+            {darkMode ? <Brightness7Icon /> : <Brightness4Icon />}
+          </IconButton>
+          <Button
+            variant="outlined"
+            onClick={() => setIsTagManageOpen(true)}
+          >
+            タグを管理
+          </Button>
+        </Box>
+
+        // ...existing code...
+      </Container>
+    </ThemeProvider>
+  );
+}
+// ...existing code...
+````
+
+
+Made changes.
+
+じゃあ次はダークモードの設定を永続化しちゃおうね！ブラウザを閉じても設定が保存されるようにローカルストレージを使うよ～！✨
+````
+// ...existing code...
+function App() {
+  // ...existing code...
+  const [darkMode, setDarkMode] = useState(() => {
+    const savedMode = localStorage.getItem('darkMode');
+    return savedMode ? JSON.parse(savedMode) : false;
+  });
+
+  const theme = createTheme({
+    palette: {
+      mode: darkMode ? 'dark' : 'light',
+    },
+  });
+
+  const toggleDarkMode = () => {
+    const newMode = !darkMode;
+    setDarkMode(newMode);
+    localStorage.setItem('darkMode', JSON.stringify(newMode));
+  };
+  // ...existing code...
+}
+````
+あっ、最後にApp.cssも修正しなきゃ！背景色がダークモードと競合しちゃうかもだから、修正しとこう！🎨
+````
+#root {
+  max-width: 100%;
+  margin: 0;
+  padding: 0;
+  text-align: center;
+  min-height: 100vh;
+}
+
+// ...existing code...
+````
+
+
+Made changes.
+
+できあがり！✨ マジいい感じのダークモードになったよ！
+
+右上にある月と太陽のアイコンをクリックするだけで、アプリ全体のカラーテーマが切り替わるようになったの！しかも、このダークモードの設定は、ブラウザのローカルストレージに保存されるから、ページを閉じて開き直しても設定が引き継がれるよ～！
+
+ダークモードにすると以下の部分が自動的に切り替わるはず：
+- 背景色
+- テキストの色
+- カード・ダイアログの色
+- ボタンやアイコンの色
+
+使ってみてどう？他にもカスタマイズしたい部分とかあったら教えてね！例えば：
+- ダークモード時の色のカスタマイズ
+- システムのテーマ設定と連動
+- アニメーション効果の追加
+
+とかできるよ！😊✨

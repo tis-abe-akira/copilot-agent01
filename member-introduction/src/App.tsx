@@ -1,6 +1,9 @@
 import { useState } from 'react';
-import { Box, Fab, Container, Button } from '@mui/material';
+import { Box, Fab, Container, Button, IconButton, CssBaseline } from '@mui/material';
+import { ThemeProvider, createTheme } from '@mui/material/styles';
 import AddIcon from '@mui/icons-material/Add';
+import Brightness4Icon from '@mui/icons-material/Brightness4';
+import Brightness7Icon from '@mui/icons-material/Brightness7';
 import { Member, Tag, CreateMemberInput, UpdateMemberInput } from './types/member';
 import { MemberList } from './components/MemberList';
 import { MemberDetailDialog } from './components/MemberDetailDialog';
@@ -48,6 +51,22 @@ function App() {
   const [isTagManageOpen, setIsTagManageOpen] = useState(false);
   const [editingMember, setEditingMember] = useState<Member | undefined>();
   const [tags, setTags] = useState<Tag[]>(sampleTags);
+  const [darkMode, setDarkMode] = useState(() => {
+    const savedMode = localStorage.getItem('darkMode');
+    return savedMode ? JSON.parse(savedMode) : false;
+  });
+
+  const theme = createTheme({
+    palette: {
+      mode: darkMode ? 'dark' : 'light',
+    },
+  });
+
+  const toggleDarkMode = () => {
+    const newMode = !darkMode;
+    setDarkMode(newMode);
+    localStorage.setItem('darkMode', JSON.stringify(newMode));
+  };
 
   const handleDragEnd = (result: DropResult) => {
     if (!result.destination) return;
@@ -120,60 +139,65 @@ function App() {
   };
 
   return (
-    <Container sx={{ py: 4 }}>
-      <Box sx={{ display: 'flex', justifyContent: 'flex-end', mb: 2 }}>
-        <Button
-          variant="outlined"
-          onClick={() => setIsTagManageOpen(true)}
-          sx={{ mr: 2 }}
+    <ThemeProvider theme={theme}>
+      <CssBaseline />
+      <Container sx={{ py: 4 }}>
+        <Box sx={{ display: 'flex', justifyContent: 'flex-end', mb: 2, gap: 2 }}>
+          <IconButton onClick={toggleDarkMode} color="inherit">
+            {darkMode ? <Brightness7Icon /> : <Brightness4Icon />}
+          </IconButton>
+          <Button
+            variant="outlined"
+            onClick={() => setIsTagManageOpen(true)}
+          >
+            タグを管理
+          </Button>
+        </Box>
+
+        <MemberList
+          members={members}
+          onMemberClick={handleMemberClick}
+          onDragEnd={handleDragEnd}
+        />
+
+        <MemberDetailDialog
+          member={selectedMember}
+          open={isDetailOpen}
+          onClose={() => setIsDetailOpen(false)}
+          onEdit={handleEdit}
+          onDelete={handleDelete}
+        />
+
+        <MemberEditDialog
+          open={isEditOpen}
+          member={editingMember}
+          tags={tags}
+          onClose={() => {
+            setIsEditOpen(false);
+            setEditingMember(undefined);
+          }}
+          onSave={handleSave}
+        />
+
+        <TagManageDialog
+          open={isTagManageOpen}
+          tags={tags}
+          onClose={() => setIsTagManageOpen(false)}
+          onSave={handleTagSave}
+        />
+
+        <Fab
+          color="primary"
+          sx={{ position: 'fixed', bottom: 16, right: 16 }}
+          onClick={() => {
+            setEditingMember(undefined);
+            setIsEditOpen(true);
+          }}
         >
-          タグを管理
-        </Button>
-      </Box>
-
-      <MemberList
-        members={members}
-        onMemberClick={handleMemberClick}
-        onDragEnd={handleDragEnd}
-      />
-
-      <MemberDetailDialog
-        member={selectedMember}
-        open={isDetailOpen}
-        onClose={() => setIsDetailOpen(false)}
-        onEdit={handleEdit}
-        onDelete={handleDelete}
-      />
-
-      <MemberEditDialog
-        open={isEditOpen}
-        member={editingMember}
-        tags={tags}
-        onClose={() => {
-          setIsEditOpen(false);
-          setEditingMember(undefined);
-        }}
-        onSave={handleSave}
-      />
-
-      <TagManageDialog
-        open={isTagManageOpen}
-        tags={tags}
-        onClose={() => setIsTagManageOpen(false)}
-        onSave={handleTagSave}
-      />
-
-      <Fab
-        color="primary"
-        sx={{ position: 'fixed', bottom: 16, right: 16 }}
-        onClick={() => {
-          setEditingMember(undefined);
-          setIsEditOpen(true);
-        }}
-      >
-        <AddIcon />
-      </Fab>
-    </Container>
+          <AddIcon />
+        </Fab>
+      </Container>
+    </ThemeProvider>
   );
 }
 
